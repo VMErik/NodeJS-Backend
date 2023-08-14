@@ -1,0 +1,33 @@
+{
+    "name": "node-js---curso-backend",
+    "version": "1.0.0",
+    "description": "Aprende desarrollo backend con Node.js! Trabaja con rutas, servidores y middlewares de Express.js. Construye una API, manipula errores y haz validación de datos. Despliega tu aplicación a producción en Heroku. Conviértete en backend developer con Node.js junto a tu profesor Nicolas Molina.",
+    "main": "index.js",
+    "scripts": {
+        "dev": "nodemon index.js",
+        "start": "node index.js",
+        "lint": "eslint"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/VMErik/NodeJS-Backend.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/VMErik/NodeJS-Backend/issues"
+    },
+    "homepage": "https://github.com/VMErik/NodeJS-Backend#readme",
+    "devDependencies": {
+        "eslint": "^8.47.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "nodemon": "^3.0.1",
+        "prettier": "^3.0.1"
+    },
+    "dependencies": {
+        "@faker-js/faker": "^8.0.2",
+        "express": "^4.18.2"
+    }
+}
