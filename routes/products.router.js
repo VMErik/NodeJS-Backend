@@ -1,35 +1,83 @@
 // Router especifico para productos
 
 const express = require('express');
-const { faker } = require('@faker-js/faker');
+// Importamos servicio /  Logica de negoci
+const ProductsService = require('./../services/product.service');
 
 const router = express.Router();
+const service = new ProductsService();
 
-
-router.get('/', (req, res) => {
-    const products = [];
+router.get('/', async(req, res) => {
     const { size } = req.query;
-    const limit = size || 10;
-    for (let index = 0; index < limit; index++) {
-        products.push({
-            name: faker.commerce.productName(),
-            price: parseInt(faker.commerce.price(), 10),
-            image: faker.image.url()
-        });
-    }
-
+    const products = await service.find();
     res.json(products);
 });
 
 
 // Recibiremos un parametro indicandolo con :_nombre_
-router.get('/:id', (req, res) => {
-    const { id } = req.params;
-    res.json({
-        id: id, // Obtenemos el id de los params
-        name: "Producto 1",
-        price: 500
+router.get('/:id', async(req, res) => {
+    try {
+
+        const { id } = req.params;
+        if (id === '999') {
+            // Simulacion not found
+            res.status(404).json({ message: 'Not Found' });
+        } else {
+            const product = await service.findOne(id);
+            res.json({
+                product
+            });
+        }
+    } catch (error) {
+        res.status(404).json({
+            message: error.message
+        });
+    }
+
+});
+
+
+// Recibe cuerpo
+router.post('/', async(req, res) => {
+    const body = req.body;
+    const newProduct = await service.create(body);
+    res.status(201).json({
+        message: 'created',
+        data: newProduct
     });
+});
+
+
+// Recibe cuerpo y param
+router.patch('/:id', async(req, res) => {
+
+    try {
+
+
+        const { id } = req.params;
+        const body = req.body;
+
+        const updatedProduct = await service.update(id, body);
+
+        res.json({
+            updatedProduct
+        })
+    } catch (error) {
+        res.status(404).json({
+            message: error.message
+        });
+    }
+
+});
+
+
+// No recibe cuerpo
+router.delete('/:id', async(req, res) => {
+    const { id } = req.params;
+    const response = await service.delete(id);
+    res.json({
+        response
+    })
 });
 
 
