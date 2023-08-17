@@ -1,5 +1,8 @@
 // Se encargara de la logica de negocio
 const { faker } = require('@faker-js/faker');
+
+const boom = require('@hapi/boom');
+
 class ProductsService {
 
 
@@ -15,7 +18,8 @@ class ProductsService {
                 id: index.toString(),
                 name: faker.commerce.productName(),
                 price: parseInt(faker.commerce.price(), 10),
-                image: faker.image.url()
+                image: faker.image.url(),
+                isBlock: faker.datatype.boolean()
             });
         }
 
@@ -36,19 +40,26 @@ class ProductsService {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve(this.products);
-            }, 5000);
+            }, 2000);
         });
 
     }
 
     async findOne(id) {
-        return this.products.find(item => item.id === id);
+        const product = this.products.find(item => item.id === id);
+        if (!product) {
+            return boom.notFound("Product Not Found");
+        }
+        if (product.isBlock) {
+            return boom.conflict("Product Is Block");
+        }
+        return product;
     }
 
     async update(id, changes) {
         const index = this.products.findIndex(item => item.id === id);
         if (index === -1) {
-            throw new Error("Product not found");
+            throw boom.notFound('Product Not Found')
         } else {
             const product = this.products[index];
             // Persistimos la informacion que ya se tenia, y guardamos lo nuevo
@@ -63,7 +74,7 @@ class ProductsService {
     async delete(id) {
         const index = this.products.findIndex(item => item.id === id);
         if (index === -1) {
-            throw new Error("Product not found");
+            throw boom.notFound("Product not found");
         } else {
             this.products.splice(index, 1);
             return id;
